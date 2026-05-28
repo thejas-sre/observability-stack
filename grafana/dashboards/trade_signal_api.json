@@ -1,0 +1,101 @@
+{
+  "title": "Trade Signal API",
+  "uid": "trade-signal-api",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Request Rate (req/s)",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "targets": [
+        {
+          "expr": "rate(trade_signal_requests_total[1m])",
+          "legendFormat": "req/s"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "p50 Latency (ms)",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, rate(trade_signal_request_duration_seconds_bucket[5m])) * 1000",
+          "legendFormat": "p50 ms"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "p99 Latency (ms)",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, rate(trade_signal_request_duration_seconds_bucket[5m])) * 1000",
+          "legendFormat": "p99 ms"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Cache Hit Rate (%)",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "targets": [
+        {
+          "expr": "rate(trade_signal_cache_hits_total[5m]) / (rate(trade_signal_cache_hits_total[5m]) + rate(trade_signal_cache_misses_total[5m])) * 100",
+          "legendFormat": "hit rate %"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Request Latency Over Time",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 4},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, rate(trade_signal_request_duration_seconds_bucket[5m])) * 1000",
+          "legendFormat": "p50"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(trade_signal_request_duration_seconds_bucket[5m])) * 1000",
+          "legendFormat": "p99"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Error Rate (%)",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "targets": [
+        {
+          "expr": "rate(trade_signal_requests_total{status='error'}[5m]) / rate(trade_signal_requests_total[5m]) * 100",
+          "legendFormat": "error rate %"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Cache Hits vs Misses",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "targets": [
+        {
+          "expr": "rate(trade_signal_cache_hits_total[1m])",
+          "legendFormat": "hits/s"
+        },
+        {
+          "expr": "rate(trade_signal_cache_misses_total[1m])",
+          "legendFormat": "misses/s"
+        }
+      ]
+    }
+  ]
+}
